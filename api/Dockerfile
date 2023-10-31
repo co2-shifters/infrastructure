@@ -4,9 +4,12 @@ WORKDIR /code
 
 COPY requirements.txt .
 
-RUN apk add --no-cache gcc musl-dev linux-headers && \
-    pip install -r requirements.txt && \
-    apk del gcc musl-dev linux-headers
+RUN apt-get update && \
+    apt-get install -y gcc musl-dev && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get remove -y gcc musl-dev && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . .
 

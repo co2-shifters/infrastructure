@@ -10,3 +10,11 @@ do
   gcloud projects add-iam-policy-binding the-co2-shifter --member=user:$user --role=roles/artifactregistry.admin
   gcloud projects add-iam-policy-binding the-co2-shifter --member=user:$user --role=roles/cloudbuild.builds.builder
 done
+
+
+call=`echo "https://artifactregistry.googleapis.com/v1beta2/projects/the-co2-shifter/locations/europe-west6/repositories/the-co2-shifter-repo/packages/electrocity-maps/tags/latest"`;
+curl --max-time 30 -s -X GET -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type:application/json" "$call"
+
+
+call=`echo "https://artifactregistry.googleapis.com/v1beta2/projects/the-co2-shifter/locations/europe-west6/repositories/the-co2-shifter-repo/packages/co2-shifter-frontend/tags/latest"`;
+curl --max-time 30 -s -X GET -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type:application/json" "$call"

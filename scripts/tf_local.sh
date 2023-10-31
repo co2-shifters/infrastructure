@@ -4,7 +4,7 @@ shopt -s inherit_errexit
 
 # init and defaults
 # project base name for use-case projects can be derived from the git repo root usually, e.g. axach-cicd-projects
-project_base_name=$(git rev-parse --show-toplevel | sed 's#.*/##')
+project_base_name=the-co2-shifter
 script_name=$(basename "$0")
 scripts_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 terraform_dir="${scripts_dir}/../terraform"
@@ -12,7 +12,6 @@ cleanup="false"
 tf_refresh="true"
 tf_init="true"
 tf_action="plan"
-project_stage=""
 tf_actions=(plan apply import)
 
 echo "Run $script_name..."
@@ -95,25 +94,22 @@ export TF_LOG_PATH="terraform.log"
 cd "${terraform_dir}" || (echo "Error: Could not cd into ${terraform_dir}. Does it exist?" && exit 1)
 
 # project id might depends on user input
-project_id="${project_base_name}-${project_stage}"
+project_id="${project_base_name}"
 
 # tf vars and configs
 tf_var_workspace=$(dirname "$(pwd)")
 tf_var_project_base="$project_base_name"
-tf_var_stage="$project_stage"
 tf_var_project_id="$project_id"
-tf_backend_config_bucket="${project_id}-tfstates"
+tf_backend_config_bucket="${project_id}-tfstate"
 
 echo "--------------------------------------------------------------------------------"
 echo "Project details:"
 echo "  project_base_name=$project_base_name"
-echo "  project_stage=$project_stage"
 echo "  project_id=$project_id"
 echo ""
 echo "TF vars:"
 echo "  var.project_id=$tf_var_project_id"
 echo "  var.project_name=$tf_var_project_base"
-echo "  var.stage=$tf_var_stage"
 echo "  var.workspace=$tf_var_workspace"
 echo ""
 echo "TF configs:"
@@ -135,7 +131,7 @@ if [ "$tf_action" = "plan" ]; then
   fi
   echo "Terraform plan"
   terraform plan -out myplan -refresh="$tf_refresh" -var project_id="$tf_var_project_id" \
-    -var project_name="$tf_var_project_base" -var stage="$tf_var_stage" -var workspace="$tf_var_workspace" \
+    -var project_name="$tf_var_project_base" -var workspace="$tf_var_workspace" \
 
 # targets
 #    -target module.cloudfunctions.google_storage_bucket_object.cf_zip[\"cf_api_bridge\"] \
@@ -148,7 +144,7 @@ elif [ "$tf_action" = "import" ]; then
   echo "Terraform import"
   echo "CUSTOMIZATION required!"
 #  terraform import -var project_id="$tf_var_project_id" -var project_name="$tf_var_project_base" \
-#    -var stage="$tf_var_stage" -var workspace="$tf_var_workspace" \
+#    -var workspace="$tf_var_workspace" \
 #    module.cloudfunctions.google_cloudfunctions_function.cf_deploy_http[\"cf_github_repo\"] axach-cicd-projects-prd/europe-west6/cf_github_repo
 else # does actually never happen, default is plan
   echo "ERROR: Unsupported action '$tf_action'." >&2 && exit 1

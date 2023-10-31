@@ -10,12 +10,13 @@ variable "project_name" {
   type = string
 }
 
-variable "stage" {
+variable "workspace" {
   type = string
 }
 
-variable "workspace" {
+variable "stage" {
   type = string
+  default = ""
 }
 
 ##############################################################
@@ -72,7 +73,7 @@ variable "cr_names" {
       max_instances = "2" // Maximum number of service instances to allow to start.
       min_instances = "0" // Minimum number of service instances to keep running.
     }
-    "cr-co2-shifter-frontend" = {
+    /*"cr-co2-shifter-frontend" = {
       image         = "europe-west6-docker.pkg.dev/the-co2-shifter/the-co2-shifter-repo/co2-shifter-frontend:latest"
       cpu           = "1" // 1, 2, 4 , CPUs to allocate to service instances.
       memory        = "2048" // one of 128, 256, 512, 1024, 2048, 4096, 8192
@@ -82,6 +83,6 @@ variable "cr_names" {
       // cloudsql_connections = ["postgres-eforms-data"] // Cloud SQL connections to attach to service instances.
       max_instances = "1" // Maximum number of service instances to allow to start.
       min_instances = "0" // Minimum number of service instances to keep running.
-    }
+    }*/
   }
 }
