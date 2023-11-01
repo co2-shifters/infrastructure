@@ -120,9 +120,8 @@ location=`echo ${replace(element(split("/", each.value.image), 0), "-docker.pkg.
 repo=`echo ${element(split("/", each.value.image), 2)}`;
 get_tag=`echo ${try(element(split(":", each.value.image), length(split(":", each.value.image))-1), "")}`;
 package=`echo ${element(split(":", join("/", slice(split("/", each.value.image), 3, length(split("/", each.value.image))))), 0)} | sed 's/\//\%2F/g'`;
-call=`echo "https://artifactregistry.googleapis.com/v1beta2/projects/${var.project_id}/locations/$location/repositories/$repo/packages/$package/tags/$tag"`;
-output=$(curl --max-time 30 -s -X GET -H "Authorization: Bearer $TF_VAR_sa_secret_id" -H "Content-Type:application/json" "$call" -v);
-jq -n --arg output "$output" '{"output":$output}'
+call=`echo "https://artifactregistry.googleapis.com/v1beta2/projects/${var.project_id}/locations/$location/repositories/$repo/packages/$package/tags/$get_tag"`;
+curl --max-time 30 -s -X GET -H "Authorization: Bearer $TF_VAR_sa_secret_id" -H "Content-Type:application/json" "$call";
 EOT
   ]
   depends_on = [
@@ -133,7 +132,7 @@ EOT
 resource "terraform_data" "images" {
   for_each = local.cr_names
   triggers_replace = [
-    data.external.artifact_registry_image[each.key]["result"]["output"]
+    data.external.artifact_registry_image[each.key]["result"]
   ]
 
 }
@@ -170,7 +169,7 @@ resource "google_cloud_run_service" "default" {
         }
       }
       containers {
-        image = replace("${element(split(":", try(each.value.image[var.stage], each.value.image)), 0)}@${element(split("/versions/", data.external.artifact_registry_image[each.key]["result"]["output"]["version"]), length(split("/versions/", data.external.artifact_registry_image[each.key]["result"]["output"]["version"]))-1)}", element(split("/", try(each.value.image[var.stage], each.value.image)), 2), try(each.value.repo_staged, false) ? "${element(split("/", try(each.value.image[var.stage], each.value.image)), 2)}-${var.stage}" : element(split("/", try(each.value.image[var.stage], each.value.image)), 2))
+        image = replace("${element(split(":", try(each.value.image[var.stage], each.value.image)), 0)}@${element(split("/versions/", data.external.artifact_registry_image[each.key]["result"]["version"]), length(split("/versions/", data.external.artifact_registry_image[each.key]["result"]["version"]))-1)}", element(split("/", try(each.value.image[var.stage], each.value.image)), 2), try(each.value.repo_staged, false) ? "${element(split("/", try(each.value.image[var.stage], each.value.image)), 2)}-${var.stage}" : element(split("/", try(each.value.image[var.stage], each.value.image)), 2))
         ports {
           container_port = try(each.value.port, 8080)
         }
@@ -213,7 +212,6 @@ resource "google_cloud_run_service" "default" {
       annotations = {
         "autoscaling.knative.dev/maxScale"                   = try(each.value.max_instances[var.stage], try(each.value.max_instances, "1"))
         "autoscaling.knative.dev/minScale"                   = try(each.value.min_instances[var.stage], try(each.value.min_instances, "0"))
-        "run.googleapis.com/post-key-revocation-action-type" = "prevent-new"
         "run.googleapis.com/execution-environment"           = try(each.value.exec_env, null)
       }
     }

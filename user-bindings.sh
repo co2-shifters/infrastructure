@@ -12,9 +12,6 @@ do
 done
 
 
-call=`echo "https://artifactregistry.googleapis.com/v1beta2/projects/the-co2-shifter/locations/europe-west6/repositories/the-co2-shifter-repo/packages/electrocity-maps/tags/latest"`;
-curl --max-time 30 -s -X GET -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type:application/json" "$call"
-
-
-call=`echo "https://artifactregistry.googleapis.com/v1beta2/projects/the-co2-shifter/locations/europe-west6/repositories/the-co2-shifter-repo/packages/co2-shifter-frontend/tags/latest"`;
-curl --max-time 30 -s -X GET -H "Authorization: Bearer $(gcloud auth print-access-token)" -H "Content-Type:application/json" "$call"
+#chensve1@students.zhaw.ch
+#nageljay@students.zhaw.ch
+#ryfnoe01@students.zhaw.ch

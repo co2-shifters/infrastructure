@@ -11,6 +11,7 @@ git clone https://github.com/co2-shifters/infrastructure
 ````
 Change permissions to execute sh scripts
 ````bash
+chmod +x ./user-bindings.sh
 chmod +x ./scripts/tf_local.sh
 chmod +x ./api/start_gcloud_builds_submit.sh
 chmod +x ./frontend/start_gcloud_builds_submit.sh 
