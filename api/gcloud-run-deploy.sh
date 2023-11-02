@@ -1,0 +1,1 @@
+gcloud run deploy SERVICE_NAME --source . --project the-co2-shifter --region europe-west6

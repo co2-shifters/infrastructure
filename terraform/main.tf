@@ -37,6 +37,19 @@ resource "google_secret_manager_secret" "secret_electricity_maps_token" {
   ]
 }
 
+resource "google_project_iam_member" "cr_secret_access" {
+  project = var.project_id
+  role = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:981307717818-compute@developer.gserviceaccount.com"
+
+  depends_on = [
+    google_project_service.project
+  ]
+}
+
+
+
+
 
 # create standard buckets
 locals {
@@ -100,18 +113,6 @@ locals {
   cr_names    = {for key, value in var.cr_names : key => value}
 }
 
-resource "terraform_data" "elements" {
-  for_each = local.cr_names
-  triggers_replace = [
-    replace(element(split("/", each.value.image), 0), "-docker.pkg.dev", ""),
-    element(split("/", each.value.image), 2),
-    try(element(split(":", each.value.image), length(split(":", each.value.image))-1), ""),
-    element(split(":", join("/", slice(split("/", each.value.image), 3, length(split("/", each.value.image))))), 0),
-    var.project_id
-  ]
-
-}
-
 data "external" "artifact_registry_image" {
   for_each = local.cr_names
   program  = [
@@ -129,14 +130,12 @@ EOT
   ]
 }
 
-resource "terraform_data" "images" {
-  for_each = local.cr_names
-  triggers_replace = [
-    data.external.artifact_registry_image[each.key]["result"]
-  ]
-
-}
-
+#resource "terraform_data" "images" {
+#  for_each = local.cr_names
+#  triggers_replace = [
+#    data.external.artifact_registry_image[each.key]["result"]
+#  ]
+#}
 
 resource "google_cloud_run_service" "default" {
   for_each = local.cr_names
@@ -145,7 +144,6 @@ resource "google_cloud_run_service" "default" {
   location = try(each.value.region, "europe-west6")
   metadata {
     annotations = {
-      "run.googleapis.com/ingress" = "internal"
       "run.googleapis.com/launch-stage" : try(each.value.launch_stage, null)
     }
     labels = try(each.value.labels, {})
