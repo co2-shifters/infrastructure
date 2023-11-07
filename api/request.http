@@ -7,8 +7,8 @@ POST http://127.0.0.1:5000/
 Content-Type: application/json
 
 {
-    "earliest_start_time": "2023-11-07T13:00:00.000Z",
-    "duration": 5,
+    "earliest_start_time": "2023-11-09T12:00:00.000Z",
+    "duration": 300,
     "latest_end_time": "2023-11-07T15:00:00.000Z"
     }
 
