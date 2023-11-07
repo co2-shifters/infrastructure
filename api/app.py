@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from os import environ
 import logging
 from google.cloud import secretmanager
+import requests
 
 app = Flask(__name__)
 
@@ -29,6 +30,22 @@ def hello_world():
     token = response.payload.data.decode("UTF-8")
 
     return jsonify({"new_input1": input1, "new_input2": input2, "new_input3": input3, "token": token[:4]})
+
+
+@app.route('/forecast', methods=["GET"])
+def forecast():
+
+    secret_name = f"projects/{project_id}/secrets/{secret_id}/versions/latest"
+    response = client.access_secret_version(request={"name": secret_name})
+    token = response.payload.data.decode("UTF-8")
+  
+    url = "https://api.electricitymap.org/v3/carbon-intensity/forecast?zone=CH"
+    headers = {
+        "auth-token": token
+    }
+    response = requests.get(url, headers=headers)    
+
+    return response.text
 
 PORT = int(environ.get("PORT", 8080))
 if __name__ == '__main__':
