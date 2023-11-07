@@ -12,6 +12,7 @@ variable "project_name" {
 
 variable "stage" {
   type = string
+  default = ""
 }
 
 variable "workspace" {

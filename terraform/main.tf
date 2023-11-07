@@ -48,9 +48,6 @@ resource "google_project_iam_member" "cr_secret_access" {
 }
 
 
-
-
-
 # create standard buckets
 locals {
   standard_buckets = { for key, value in var.bucket_names : key => value if try(value.create, true) }
@@ -130,12 +127,12 @@ EOT
   ]
 }
 
-#resource "terraform_data" "images" {
-#  for_each = local.cr_names
-#  triggers_replace = [
-#    data.external.artifact_registry_image[each.key]["result"]
-#  ]
-#}
+resource "terraform_data" "images" {
+  for_each = local.cr_names
+  triggers_replace = [
+    data.external.artifact_registry_image[each.key]["result"]
+  ]
+}
 
 resource "google_cloud_run_service" "default" {
   for_each = local.cr_names

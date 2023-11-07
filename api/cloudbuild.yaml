@@ -1,9 +1,9 @@
 steps:
   - name: 'docker'
     entrypoint: 'sh'
-    args: [ '-c', 'docker build -t europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$TAG_NAME -t europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:latest .' ]
+    args: [ '-c', 'docker build -t europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$_TAG .' ]
 images: [
-  'europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$TAG_NAME',
+  'europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$_TAG',
 ]
 substitutions:
   _TARGETPROJECT: the-co2-shifter
