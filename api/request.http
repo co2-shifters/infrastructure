@@ -2,7 +2,7 @@
 GET http://127.0.0.1:8080/forecast
 
 
-### GET to optimise
+### POST get optimal starttime (local)
 POST http://127.0.0.1:5000/
 Content-Type: application/json
 
@@ -11,3 +11,13 @@ Content-Type: application/json
     "duration": 5,
     "latest_end_time": "2023-11-07T15:00:00.000Z"
     }
+
+### POST get optimal starttime
+POST https://cr-electricity-maps-jfxxckhsja-oa.a.run.app
+Content-Type: application/json
+
+{
+"earliest_start_time": "2023-11-07T13:00:00.000Z",
+"duration": 5,
+"latest_end_time": "2023-11-07T15:00:00.000Z"
+}
