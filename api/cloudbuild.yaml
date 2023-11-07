@@ -1,13 +1,13 @@
 steps:
   - name: 'docker'
     entrypoint: 'sh'
-    args: [ '-c', 'docker build -t europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$_TAG .' ]
+    args: [ '-c', 'docker build -t europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$TAG_NAME -t europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:latest .' ]
 images: [
-  'europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$_TAG',
+  'europe-west6-docker.pkg.dev/$_TARGETPROJECT/$_TARGETPROJECT-repo/$_IMAGEPATH:$TAG_NAME',
 ]
 substitutions:
   _TARGETPROJECT: the-co2-shifter
-  _IMAGEPATH: electrocity-maps # default value, will be set by the pipeline or shell
+  _IMAGEPATH: electricity-maps # default value, will be set by the pipeline or shell
   _TAG: latest
 options:
   logging: CLOUD_LOGGING_ONLY

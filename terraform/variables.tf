@@ -10,13 +10,12 @@ variable "project_name" {
   type = string
 }
 
-variable "workspace" {
+variable "stage" {
   type = string
 }
 
-variable "stage" {
+variable "workspace" {
   type = string
-  default = ""
 }
 
 ##############################################################
@@ -64,8 +63,8 @@ variable "cr_names" {
   type        = any
   default     = {
     // if no cr needed let empty {}
-    "cr-electrocity-maps" = {
-      image         = "europe-west6-docker.pkg.dev/the-co2-shifter/the-co2-shifter-repo/electrocity-maps:latest"
+    "cr-electricity-maps" = {
+      image         = "europe-west6-docker.pkg.dev/the-co2-shifter/the-co2-shifter-repo/electricity-maps:latest"
       cpu           = "1" // 1, 2, 4 , CPUs to allocate to service instances.
       memory        = "2048" // one of 128, 256, 512, 1024, 2048, 4096, 8192
       concurrency   = "1" // Maximum number of requests a single service instance can handle at once.
